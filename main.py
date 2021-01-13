@@ -22,7 +22,6 @@ async def main():
     i = 0
     while i < 15:
         i += 1
-        print(user_names)
         if len(user_names) <= 0:
             print("all ads finished, try again later...")
             exit(0)
