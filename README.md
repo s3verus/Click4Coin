@@ -13,13 +13,17 @@ first click on links and start bots
 [Bitcoin](https://t.me/BitcoinClick_bot?start=RBEp) <br>
 
 
-# Install 
+# Install and run
 $ pkg update && pkg upgrade <br>
 $ pkg install python git unzip curl <br>
 $ git clone https://github.com/s3verus/Click4Coin.git <br>
 $ cd Click4Coin <br>
-$ pip install --upgrade pip <br>
 $ pip3 install -r requirements.txt <br>
+
+login to telegram with [this link](https://my.telegram.org/auth) and get your api_id and api_hash <br>
+edit main.py and replace your api_id and api_hash in lines 7 and 8 <br>
+save file and run codes with : <br>
+
 $ python3 main.py <br>
 
 
