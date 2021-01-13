@@ -14,10 +14,18 @@ first click on links and start bots
 
 
 # Install 
-$ pkg update && pkg upgrade<br>
-$ pkg install python git unzip curl<br>
-$ git clone https://github.com/s3verus/Click4Coin.git<br>
-$ cd Click4Coin<br>
-$ pip3 install -r requirements.txt<br>
-$ python3 main.py<br>
+$ pkg update && pkg upgrade <br>
+$ pkg install python git unzip curl <br>
+$ git clone https://github.com/s3verus/Click4Coin.git <br>
+$ cd Click4Coin <br>
+$ pip install --upgrade pip <br>
+$ pip3 install -r requirements.txt <br>
+$ python3 main.py <br>
+
+
+# notes
+
+$ after run main.py, enter your phone number with country code like : +1858... <br>
+$ after enter number, enter telegram login code <br>
+$ if you enable two-step verification, please enter your password <br>
 
