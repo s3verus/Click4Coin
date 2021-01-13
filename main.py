@@ -22,23 +22,29 @@ async def main():
     i = 0
     while i < 15:
         i += 1
+        print(user_names)
+        if len(user_names) <= 0:
+            print("all ads finished, try again later...")
+            exit(0)
         for username in user_names:
             try:
                 await client.send_message(username, message)
                 print("sending message to {}".format(username))
                 sleep(1)
                 messages = await client.get_messages(username, limit=1)
-                if "Sorry" not in messages:
+                if "Sorry," not in str(messages[0]):
                     start = str(messages).find("url=")
                     link = str(messages)[start + 5:start + 36]
                     print(link)
                     command = "curl --silent " + link + " > /dev/null"
                     os.system(command)
+                    sleep(1)
                     messages = await client.get_messages(username, limit=1)
-                    if "stay" not in messages or "earned" not in messages:
+                    if "stay" not in str(messages[0]) or "earned" not in str(messages[0]):
                         print("skipping task...")
                         await messages[0].click(1, 1)
                 else:
+                    print("no more ads in {}, removing bot from list.".format(username))
                     user_names.remove(username)
 
             except errors.FloodWaitError as e:
