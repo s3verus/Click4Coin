@@ -34,6 +34,13 @@ async def main():
                     print(link)
                     command = "curl --silent " + link + " > /dev/null"
                     os.system(command)
+                    messages = await client.get_messages(username, limit=1)
+                    if "stay" not in messages or "earned" not in messages:
+                        print("skipping task...")
+                        await messages[0].click(1, 1)
+                else:
+                    user_names.remove(username)
+
             except errors.FloodWaitError as e:
                 print('Have to sleep', e.seconds, 'seconds')
                 print("this limit is set by telegram!\n Nobody knows the exact limits for all requests since they "
@@ -46,5 +53,3 @@ async def main():
 
 # Then, we need to run the loop with a task
 loop.run_until_complete(main())
-
-
