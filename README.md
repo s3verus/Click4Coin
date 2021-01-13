@@ -1,5 +1,5 @@
 # Click4Coin
-get free coin with auto click on adds
+get free coin with auto click on ads
 
 
 # usage
