@@ -33,3 +33,8 @@ $ after run main.py, enter your phone number with country code like : +1858... <
 $ after enter number, enter telegram login code <br>
 $ if you enable two-step verification, please enter your password <br>
 
+
+# logout
+
+you can logout with this command: <br>
+$ python3 main.py logout <br>
