@@ -4,8 +4,8 @@ from time import sleep
 from telethon import TelegramClient, errors
 
 # API variables
-api_id = 01234 		     # add your api_id here
-api_hash = "19f30c5a1c..."   # add your api_hash here
+api_id = 12345 		             # add your api_id here
+api_hash = "19f30c5a1c..."       # add your api_hash here
 
 user_names = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
 message = "/visit"
@@ -34,6 +34,8 @@ async def main():
                 if "Sorry," not in str(messages[0]):
                     start = str(messages).find("url=")
                     link = str(messages)[start + 5:start + 36]
+                    if "'" in link:
+                        link = link[:-1]
                     print(link)
                     command = "curl --silent " + link + " > /dev/null"
                     os.system(command)
@@ -42,8 +44,16 @@ async def main():
                     if "stay" not in str(messages[0]) or "earned" not in str(messages[0]):
                         print("skipping task...")
                         await messages[0].click(1, 1)
+                    else:
+                        print("site visited!")
                 else:
                     print("no more ads in {}, removing bot from list.".format(username))
+                    balance = "/balance"
+                    await client.send_message(username, balance)
+                    sleep(1)
+                    messages = await client.get_messages(username, limit=1)
+                    messages_list = str(messages[0])[8:-1].split(", ")
+                    print(str(messages_list[9])[9:-1])
                     user_names.remove(username)
 
             except errors.FloodWaitError as e:
