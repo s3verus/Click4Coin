@@ -50,10 +50,11 @@ async def get_balance(username):
 
 
 async def main():
-    if argv[1] == "logout":
-        print("logging out...")
-        await client.log_out()
-        exit(0)
+    if len(argv) == 2:
+        if argv[1] == "logout":
+            print("logging out...")
+            await client.log_out()
+            exit(0)
 
     while True:
         if len(user_names) <= 0:
