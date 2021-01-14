@@ -1,6 +1,7 @@
 import os
 import asyncio
 from time import sleep
+from sys import argv
 from telethon import TelegramClient, errors
 
 # API variables
@@ -18,10 +19,43 @@ client.start()
 loop = asyncio.get_event_loop()
 
 
+async def visiting_link(messages):
+    """
+    get message, find link and execute with curl
+    :param messages: get bot message as param
+    :return: nothing, just print url
+    """
+    start = str(messages).find("url=")
+    link = str(messages)[start + 5:start + 36]
+    if "'" in link:
+        link = link[:-1]
+    print(link)
+    command = "curl --silent " + link + " > /dev/null"
+    os.system(command)
+    sleep(1)
+
+
+async def get_balance(username):
+    """
+    get username, send balance command, get and filter message, print balance
+    :param username: bot username
+    :return: nothing just print balance
+    """
+    balance = "/balance"
+    await client.send_message(username, balance)
+    sleep(1)
+    messages = await client.get_messages(username, limit=1)
+    messages_list = str(messages[0])[8:-1].split(", ")
+    print(str(messages_list[9])[9:-1])
+
+
 async def main():
-    i = 0
-    while i < 15:
-        i += 1
+    if argv[1] == "logout":
+        print("logging out...")
+        await client.log_out()
+        exit(0)
+
+    while True:
         if len(user_names) <= 0:
             print("all ads finished, try again later...")
             exit(0)
@@ -32,28 +66,16 @@ async def main():
                 sleep(1)
                 messages = await client.get_messages(username, limit=1)
                 if "Sorry," not in str(messages[0]):
-                    start = str(messages).find("url=")
-                    link = str(messages)[start + 5:start + 36]
-                    if "'" in link:
-                        link = link[:-1]
-                    print(link)
-                    command = "curl --silent " + link + " > /dev/null"
-                    os.system(command)
-                    sleep(1)
+                    await visiting_link(messages)
                     messages = await client.get_messages(username, limit=1)
-                    if "stay" not in str(messages[0]) or "earned" not in str(messages[0]):
+                    if "10 seconds..." not in str(messages[0]):
                         print("skipping task...")
                         await messages[0].click(1, 1)
                     else:
                         print("site visited!")
                 else:
                     print("no more ads in {}, removing bot from list.".format(username))
-                    balance = "/balance"
-                    await client.send_message(username, balance)
-                    sleep(1)
-                    messages = await client.get_messages(username, limit=1)
-                    messages_list = str(messages[0])[8:-1].split(", ")
-                    print(str(messages_list[9])[9:-1])
+                    await get_balance(username)
                     user_names.remove(username)
 
             except errors.FloodWaitError as e:
@@ -63,7 +85,6 @@ async def main():
                 sleep(e.seconds)
         print("wait 9 seconds...")
         sleep(9)
-    exit(0)
 
 
 # Then, we need to run the loop with a task
