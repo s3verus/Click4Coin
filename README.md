@@ -50,3 +50,15 @@ first edit mtproxy.txt file and add your mtproto in first line with this style:<
 server, port, secret <br>
 
 MTProxy secret must be a hex-string representing 16 bytes <br>
+
+
+# unlimited mode
+
+for running script for a long time without stop, you can run with -ul like following command: <br>
+
+$ python3 main.py -ul <br><br>
+
+or when you using proxy: <br>
+
+$ python3 main.py -mt -ul <br>
+
