@@ -38,3 +38,15 @@ $ if you enable two-step verification, please enter your password <br>
 
 you can logout with this command: <br>
 $ python3 main.py logout <br>
+
+
+# use in behind a Proxy
+
+If Telegram is blocked in your country, you can use the script using the following command: <br>
+
+$ python3 main.py -mt <br><br>
+
+first edit mtproxy.txt file and add your mtproto in first line with this style:<br>
+server, port, secret <br>
+
+MTProxy secret must be a hex-string representing 16 bytes <br>
