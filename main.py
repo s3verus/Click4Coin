@@ -82,7 +82,7 @@ async def main():
                 if argv[1] == "-ul" or argv[2] == "-ul":
                     user_names.extend(temp_list)
                     print("unlimited mode is activated, sleeping for 30 minute.")
-                    sleep(3600)
+                    sleep(1800)
                 else:
                     print("all ads finished, try again later...")
                     exit(0)
