@@ -125,7 +125,7 @@ async def main():
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
                             print("opening task and waiting 10 seconds...")
-                            await messages[0].click(0, 0)
+                            await messages[0].click()
                             sleep(10)
                         else:
                             print("skipping task...")
