@@ -13,7 +13,8 @@ temp_list = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH
 message = "/visit"
 
 # Client Object
-if len(argv) == 2 or len(argv) == 3:
+if 2 <= len(argv) <= 3:
+
     if argv[1] == "-mt":
         f = open("mtproxy.txt", "r")
         proxy = (f.readline()).split(", ")
@@ -21,7 +22,6 @@ if len(argv) == 2 or len(argv) == 3:
         if proxy[2][-1] == "\n":
             proxy[2] = proxy[2][:-1]
         proxy = tuple(proxy)
-        print(proxy)
         f.close()
         client = TelegramClient(
             'session_C4C', api_id, api_hash,
@@ -70,19 +70,42 @@ async def get_balance(username):
 
 
 async def main():
+    # logout and delete session file
+    global waiting_time
     if len(argv) == 2:
         if argv[1] == "logout":
             print("logging out...")
             await client.log_out()
             exit(0)
 
+    # get permission from user to open some sites
+    visit = input("some sites should open in browser, wanna accept our reject?(accept/reject)\n").lower()
+    if visit == "accept":
+        allow = True
+    elif visit == "reject":
+        allow = False
+    else:
+        print("undefined input, set false by default.")
+        allow = False
+
+    # getting waiting time
+    if 2 <= len(argv) <= 3:
+        if argv[1] == "-ul" or argv[2] == "-ul":
+            try:
+                waiting_time = int(input("you activate unlimited mode, please enter waiting time(minutes):\n")) * 60
+            except:
+                print("undefined input, set 20 minutes by default.")
+                waiting_time = 1200
+
     while True:
         if len(user_names) <= 0:
-            if len(argv) == 2 or len(argv) == 3:
+            # active unlimited mode
+            if 2 <= len(argv) <= 3:
                 if argv[1] == "-ul" or argv[2] == "-ul":
                     user_names.extend(temp_list)
-                    print("unlimited mode is activated, sleeping for 30 minute.")
-                    sleep(1800)
+                    print("unlimited mode is activated, sleeping for {} minutes...".format(waiting_time / 60))
+                    print("")
+                    sleep(waiting_time)
                 else:
                     print("all ads finished, try again later...")
                     exit(0)
@@ -100,8 +123,13 @@ async def main():
                     await visiting_link(messages)
                     messages = await client.get_messages(username, limit=1)
                     if "10 seconds..." not in str(messages[0]):
-                        print("skipping task...")
-                        await messages[0].click(1, 1)
+                        if allow:
+                            print("opening task and waiting 10 seconds...")
+                            await messages[0].click(0, 0)
+                            sleep(10)
+                        else:
+                            print("skipping task...")
+                            await messages[0].click(1, 1)
                     else:
                         print("site visited!")
                 else:
@@ -114,9 +142,10 @@ async def main():
                 print("this limit is set by telegram!\n Nobody knows the exact limits for all requests since they "
                       "depend on a lot of factors.\n don't worry about it.")
                 sleep(e.seconds)
-        print("wait 9 seconds...")
+        print("waiting 9 seconds...")
         sleep(9)
 
 
 # Then, we need to run the loop with a task
 loop.run_until_complete(main())
+
