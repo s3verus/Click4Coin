@@ -14,7 +14,6 @@ message = "/visit"
 
 # Client Object
 if 2 <= len(argv) <= 3:
-
     if argv[1] == "-mt":
         f = open("mtproxy.txt", "r")
         proxy = (f.readline()).split(", ")
@@ -55,6 +54,21 @@ async def visiting_link(messages):
     sleep(1)
 
 
+async def opening_link(messages):
+    """
+    get message, find link and execute with open
+    :param messages: get bot message as param
+    :return: nothing
+    """
+    start = str(messages).find("url=")
+    link = str(messages)[start + 5:start + 36]
+    if "'" in link:
+        link = link[:-1]
+    command = "open " + link
+    os.system(command)
+    sleep(10)
+
+
 async def get_balance(username):
     """
     get username, send balance command, get and filter message, print balance
@@ -90,7 +104,7 @@ async def main():
 
     # getting waiting time
     if 2 <= len(argv) <= 3:
-        if argv[1] == "-ul" or argv[2] == "-ul":
+        if argv[len(argv)-1] == "-ul":
             try:
                 waiting_time = int(input("you activate unlimited mode, please enter waiting time(minutes):\n")) * 60
             except:
@@ -101,7 +115,7 @@ async def main():
         if len(user_names) <= 0:
             # active unlimited mode
             if 2 <= len(argv) <= 3:
-                if argv[1] == "-ul" or argv[2] == "-ul":
+                if argv[len(argv)-1] == "-ul":
                     user_names.extend(temp_list)
                     print("unlimited mode is activated, sleeping for {} minutes...".format(waiting_time / 60))
                     print("")
@@ -124,9 +138,8 @@ async def main():
                     messages = await client.get_messages(username, limit=1)
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
-                            await messages[0].click(0)
                             print("opening task and waiting 10 seconds...")
-                            sleep(10)
+                            await opening_link(messages)
                         else:
                             print("skipping task...")
                             await messages[0].click(1, 1)
@@ -148,4 +161,3 @@ async def main():
 
 # Then, we need to run the loop with a task
 loop.run_until_complete(main())
-
