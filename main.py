@@ -9,10 +9,11 @@ api_id = 12345 		             # add your api_id here
 api_hash = "19f30c5a1c..."       # add your api_hash here
 
 user_names = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
+temp_list = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
 message = "/visit"
 
 # Client Object
-if len(argv) == 2:
+if len(argv) == 2 or len(argv) == 3:
     if argv[1] == "-mt":
         f = open("mtproxy.txt", "r")
         proxy = (f.readline()).split(", ")
@@ -30,9 +31,9 @@ if len(argv) == 2:
         client.start()
     elif argv[1] == "-p":  # TODO add other kind of proxy
         pass
-else:
-    client = TelegramClient("session_C4C", api_id, api_hash)
-    client.start()
+    else:
+        client = TelegramClient("session_C4C", api_id, api_hash)
+        client.start()
 
 # Then we need a loop to work with
 loop = asyncio.get_event_loop()
@@ -77,8 +78,18 @@ async def main():
 
     while True:
         if len(user_names) <= 0:
-            print("all ads finished, try again later...")
-            exit(0)
+            if len(argv) == 2 or len(argv) == 3:
+                if argv[1] == "-ul" or argv[2] == "-ul":
+                    user_names.extend(temp_list)
+                    print("unlimited mode is activated, sleeping for 30 minute.")
+                    sleep(3600)
+                else:
+                    print("all ads finished, try again later...")
+                    exit(0)
+            else:
+                print("all ads finished, try again later...")
+                exit(0)
+
         for username in user_names:
             try:
                 await client.send_message(username, message)
