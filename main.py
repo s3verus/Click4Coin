@@ -2,7 +2,7 @@ import os
 import asyncio
 from time import sleep
 from sys import argv
-from telethon import TelegramClient, errors
+from telethon import TelegramClient, errors, connection
 
 # API variables
 api_id = 12345 		             # add your api_id here
@@ -12,8 +12,27 @@ user_names = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BC
 message = "/visit"
 
 # Client Object
-client = TelegramClient("session_C4C", api_id, api_hash)
-client.start()
+if len(argv) == 2:
+    if argv[1] == "-mt":
+        f = open("mtproxy.txt", "r")
+        proxy = (f.readline()).split(", ")
+        proxy[1] = int(proxy[1])
+        if proxy[2][-1] == "\n":
+            proxy[2] = proxy[2][:-1]
+        proxy = tuple(proxy)
+        print(proxy)
+        f.close()
+        client = TelegramClient(
+            'session_C4C', api_id, api_hash,
+            connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,
+            proxy=proxy
+        )
+        client.start()
+    elif argv[1] == "-p":  # TODO add other kind of proxy
+        pass
+else:
+    client = TelegramClient("session_C4C", api_id, api_hash)
+    client.start()
 
 # Then we need a loop to work with
 loop = asyncio.get_event_loop()
