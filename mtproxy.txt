@@ -1,0 +1,7 @@
+192.168.10.100, 443, 0000000000000000000000
+#      ^         ^            ^
+#      |         |            |
+#   server,      port,       secret
+
+# edit first line and enter "server, port, secret" of your mtproto exactly like example
+# MTProxy secret must be a hex-string representing 16 bytes
