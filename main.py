@@ -124,8 +124,8 @@ async def main():
                     messages = await client.get_messages(username, limit=1)
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
+                            await messages[0].click(0)
                             print("opening task and waiting 10 seconds...")
-                            await messages[0].click()
                             sleep(10)
                         else:
                             print("skipping task...")
