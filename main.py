@@ -33,7 +33,10 @@ if 2 <= len(argv) <= 3:
     else:
         client = TelegramClient("session_C4C", api_id, api_hash)
         client.start()
-
+else:
+    client = TelegramClient("session_C4C", api_id, api_hash)
+    client.start()
+    
 # Then we need a loop to work with
 loop = asyncio.get_event_loop()
 
@@ -81,6 +84,26 @@ async def get_balance(username):
     messages = await client.get_messages(username, limit=1)
     messages_list = str(messages[0])[8:-1].split(", ")
     print(str(messages_list[9])[9:-1])
+
+
+async def compare_2last_links(username):
+    """
+    get 5 last messages in chat for checking urls
+    if find same url skip the ads
+    :param username: get bot username as input
+    :return: bool value,
+    """
+    messages = await client.get_messages(username, limit=5)
+    start1 = str(messages[0]).find("url=")
+    link1 = str(messages[0])[start1 + 5:start1 + 36]
+    start2 = str(messages[4]).find("url=")
+    link2 = str(messages[4])[start2 + 5:start2 + 36]
+    if link1 == link2:
+        print("can't open, skipping task...")
+        await messages[0].click(1, 1)
+        return True
+    else:
+        return False
 
 
 async def main():
@@ -138,8 +161,9 @@ async def main():
                     messages = await client.get_messages(username, limit=1)
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
-                            print("opening task and waiting 20 seconds...")
-                            await opening_link(messages)
+                            if not await compare_2last_links(username):
+                                print("opening task and waiting 20 seconds...")
+                                await opening_link(messages)
                         else:
                             print("skipping task...")
                             await messages[0].click(1, 1)
