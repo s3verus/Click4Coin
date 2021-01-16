@@ -66,7 +66,7 @@ async def opening_link(messages):
         link = link[:-1]
     command = "xdg-open " + link
     os.system(command)
-    sleep(10)
+    sleep(20)
 
 
 async def get_balance(username):
@@ -99,7 +99,7 @@ async def main():
     elif visit == "reject":
         allow = False
     else:
-        print("undefined input, set false by default.")
+        print("undefined input, reject by default.")
         allow = False
 
     # getting waiting time
@@ -108,8 +108,8 @@ async def main():
             try:
                 waiting_time = int(input("you activate unlimited mode, please enter waiting time(minutes):\n")) * 60
             except:
-                print("undefined input, set 20 minutes by default.")
-                waiting_time = 1200
+                print("undefined input, set 15 minutes by default.")
+                waiting_time = 900
 
     while True:
         if len(user_names) <= 0:
@@ -138,7 +138,7 @@ async def main():
                     messages = await client.get_messages(username, limit=1)
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
-                            print("opening task and waiting 10 seconds...")
+                            print("opening task and waiting 20 seconds...")
                             await opening_link(messages)
                         else:
                             print("skipping task...")
