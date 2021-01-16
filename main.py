@@ -64,7 +64,7 @@ async def opening_link(messages):
     link = str(messages)[start + 5:start + 36]
     if "'" in link:
         link = link[:-1]
-    command = "open " + link
+    command = "xdg-open " + link
     os.system(command)
     sleep(10)
 
