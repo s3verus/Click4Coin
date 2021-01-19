@@ -7,8 +7,8 @@ import bs4
 from telethon import TelegramClient, errors, connection
 
 # API variables
-api_id = 12345 		             # add your api_id here
-api_hash = "19f30c5a1c..."       # add your api_hash here
+api_id = 12345  # add your api_id here
+api_hash = "19f30c5a1c..."  # add your api_hash here
 
 user_names = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
 temp_list = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
@@ -38,7 +38,7 @@ if 2 <= len(argv) <= 3:
 else:
     client = TelegramClient("session_C4C", api_id, api_hash)
     client.start()
-    
+
 # Then we need a loop to work with
 loop = asyncio.get_event_loop()
 
@@ -79,7 +79,10 @@ async def opening_link(messages):
         n = n[:-1]
     if n[0] == '"':
         n = n[1:]
-    n = int(n)
+    try:
+        n = int(n)
+    except:
+        n = 20
     print("opening task and waiting {} seconds...".format(n))
     # opening browser
     command = "xdg-open " + link
@@ -142,7 +145,7 @@ async def main():
 
     # getting waiting time
     if 2 <= len(argv) <= 3:
-        if argv[len(argv)-1] == "-ul":
+        if argv[len(argv) - 1] == "-ul":
             try:
                 waiting_time = int(input("you activate unlimited mode, please enter waiting time(minutes):\n")) * 60
             except:
@@ -153,7 +156,7 @@ async def main():
         if len(user_names) <= 0:
             # active unlimited mode
             if 2 <= len(argv) <= 3:
-                if argv[len(argv)-1] == "-ul":
+                if argv[len(argv) - 1] == "-ul":
                     user_names.extend(temp_list)
                     print("unlimited mode is activated, sleeping for {} minutes...".format(waiting_time / 60))
                     print("")
