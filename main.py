@@ -74,7 +74,10 @@ async def opening_link(messages):
     response = requests.get(link)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
     all_div = soup.findAll('div')
-    n = int(str(all_div[0])[77:79])
+    n = str(all_div[0])[77:79]
+    if n[-1] == '"':
+        n = n[:-1]
+    n = int(n)
     print("opening task and waiting {} seconds...".format(n))
     # opening browser
     command = "xdg-open " + link
@@ -188,8 +191,8 @@ async def main():
                 print("this limit is set by telegram!\n Nobody knows the exact limits for all requests since they "
                       "depend on a lot of factors.\n don't worry about it.")
                 sleep(e.seconds)
-        print("waiting 9 seconds...")
-        sleep(9)
+        print("waiting 10 seconds...")
+        sleep(10)
 
 
 # Then, we need to run the loop with a task
