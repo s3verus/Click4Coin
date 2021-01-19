@@ -2,6 +2,8 @@ import os
 import asyncio
 from time import sleep
 from sys import argv
+import requests
+import bs4
 from telethon import TelegramClient, errors, connection
 
 # API variables
@@ -63,13 +65,21 @@ async def opening_link(messages):
     :param messages: get bot message as param
     :return: nothing
     """
+    # getting url
     start = str(messages).find("url=")
     link = str(messages)[start + 5:start + 36]
     if "'" in link:
         link = link[:-1]
+    # getting time for waiting in site
+    response = requests.get(link)
+    soup = bs4.BeautifulSoup(response.text, 'html.parser')
+    all_div = soup.findAll('div')
+    n = int(str(all_div[0])[77:79])
+    print("opening task and waiting {} seconds...".format(n))
+    # opening browser
     command = "xdg-open " + link
     os.system(command)
-    sleep(20)
+    sleep(n)
 
 
 async def get_balance(username):
@@ -162,7 +172,6 @@ async def main():
                     if "10 seconds..." not in str(messages[0]):
                         if allow:
                             if not await compare_2last_links(username):
-                                print("opening task and waiting 20 seconds...")
                                 await opening_link(messages)
                         else:
                             print("skipping task...")
