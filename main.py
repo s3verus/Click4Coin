@@ -74,9 +74,11 @@ async def opening_link(messages):
     response = requests.get(link)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
     all_div = soup.findAll('div')
-    n = str(all_div[0])[77:79]
+    n = str(all_div[0])[76:79]
     if n[-1] == '"':
         n = n[:-1]
+    if n[0] == '"':
+        n = n[1:]
     n = int(n)
     print("opening task and waiting {} seconds...".format(n))
     # opening browser
