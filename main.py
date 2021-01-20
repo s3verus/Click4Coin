@@ -189,12 +189,12 @@ async def main():
                 messages = await client.get_messages(username, limit=1)
                 if "Sorry," not in str(messages[0]):
                     await visiting_link(messages)
-                    messages2 = await client.get_messages(username, limit=1)
-                    if ("10 seconds..." in str(messages2[0])) or ("You earned" in str(messages2[0])):
+                    messages = await client.get_messages(username, limit=1)
+                    if ("10 seconds..." in str(messages[0])) or ("You earned" in str(messages[0])):
                         print("site visited!")
                     else:
                         # try to handle some unexpected messages
-                        if "to /visit!" in str(messages2[0]):
+                        if "to /visit!" in str(messages[0]):
                             print("site, visited!")
                         elif allow:
                             if not await compare_2last_links(username):
