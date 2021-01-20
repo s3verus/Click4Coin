@@ -123,8 +123,12 @@ async def compare_2last_links(username):
     messages = await client.get_messages(username, limit=5)
     start1 = str(messages[0]).find("url=")
     link1 = str(messages[0])[start1 + 5:start1 + 36]
-    start2 = str(messages[4]).find("url=")
-    link2 = str(messages[4])[start2 + 5:start2 + 36]
+    try:
+        start2 = str(messages[4]).find("url=")
+        link2 = str(messages[4])[start2 + 5:start2 + 36]
+    except:
+        link2 = ""
+
     if link1 == link2:
         print("can't open, skipping task...")
         await messages[0].click(1, 1)
