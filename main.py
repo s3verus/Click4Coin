@@ -189,16 +189,19 @@ async def main():
                 messages = await client.get_messages(username, limit=1)
                 if "Sorry," not in str(messages[0]):
                     await visiting_link(messages)
-                    messages = await client.get_messages(username, limit=1)
-                    if "10 seconds..." not in str(messages[0]):
-                        if allow:
+                    messages2 = await client.get_messages(username, limit=1)
+                    if ("10 seconds..." in str(messages2[0])) or ("You earned" in str(messages2[0])):
+                        print("site visited!")
+                    else:
+                        # try to handle some unexpected messages
+                        if "to /visit!" in str(messages2[0]):
+                            print("site, visited!")
+                        elif allow:
                             if not await compare_2last_links(username):
                                 await opening_link(messages)
                         else:
                             print("skipping task...")
                             await messages[0].click(1, 1)
-                    else:
-                        print("site visited!")
                 else:
                     print("no more ads in {}, removing bot from list.".format(username))
                     await get_balance(username)
