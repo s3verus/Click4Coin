@@ -54,8 +54,12 @@ async def visiting_link(messages):
     if "'" in link:
         link = link[:-1]
     print(link)
-    command = "curl --silent " + link + " > /dev/null"
-    os.system(command)
+    try:
+        command = "curl --silent " + link + " > /dev/null"
+        os.system(command)
+    except:
+        # we have some issue when get url!
+        print("can't visit, invalid url!")
     sleep(1)
 
 
@@ -85,8 +89,13 @@ async def opening_link(messages):
         n = 20
     print("opening task and waiting {} seconds...".format(n))
     # opening browser
-    command = "xdg-open " + link
-    os.system(command)
+    try:
+        command = "xdg-open " + link
+        os.system(command)
+        sleep(1)
+    except:
+        # we have some issue when get url!
+        print("can't open, invalid url!")
     sleep(n)
 
 
