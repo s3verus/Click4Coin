@@ -49,7 +49,7 @@ async def visiting_link(messages):
     :param messages: get bot message as param
     :return: nothing, just print url
     """
-    start = str(messages).find("url=")
+    start = str(messages).find("url=")  # TODO change it
     link = str(messages)[start + 5:start + 36]
     if "'" in link:
         link = link[:-1]
@@ -70,7 +70,7 @@ async def opening_link(messages):
     :return: nothing
     """
     # getting url
-    start = str(messages).find("url=")
+    start = str(messages).find("url=")  # TODO change it
     link = str(messages)[start + 5:start + 36]
     if "'" in link:
         link = link[:-1]
@@ -92,7 +92,7 @@ async def opening_link(messages):
     try:
         command = "xdg-open " + link
         os.system(command)
-        sleep(1)
+        sleep(3)
     except:
         # we have some issue when get url!
         print("can't open, invalid url!")
@@ -107,9 +107,9 @@ async def get_balance(username):
     """
     balance = "/balance"
     await client.send_message(username, balance)
-    sleep(1)
+    sleep(1.5)
     messages = await client.get_messages(username, limit=1)
-    messages_list = str(messages[0])[8:-1].split(", ")
+    messages_list = str(messages[0])[8:-1].split(", ")  # TODO change it
     print(str(messages_list[9])[9:-1])
 
 
@@ -121,10 +121,10 @@ async def compare_2last_links(username):
     :return: bool value,
     """
     messages = await client.get_messages(username, limit=5)
-    start1 = str(messages[0]).find("url=")
+    start1 = str(messages[0]).find("url=")  # TODO change it
     link1 = str(messages[0])[start1 + 5:start1 + 36]
     try:
-        start2 = str(messages[4]).find("url=")
+        start2 = str(messages[4]).find("url=")  # TODO change it
         link2 = str(messages[4])[start2 + 5:start2 + 36]
     except:
         link2 = ""
@@ -196,6 +196,8 @@ async def main():
                         # try to handle some unexpected messages
                         if "to /visit!" in str(messages[0]):
                             print("site, visited!")
+                        elif "Sorry," in str(messages[0]):
+                            print("Site, visited!")
                         elif allow:
                             if not await compare_2last_links(username):
                                 await opening_link(messages)
