@@ -4,12 +4,16 @@ from time import sleep
 from sys import argv
 import requests
 import bs4
+from bs4 import BeautifulSoup
 from telethon import TelegramClient, errors, connection
+from telethon.tl.functions.messages import GetHistoryRequest, GetBotCallbackAnswerRequest
 
 # API variables
 api_id = 12345  # add your api_id here
-api_hash = "19f30c5a1c..."  # add your api_hash here
+api_hash = "19f30c5a..."  # add your api_hash here
 
+c = requests.Session()
+ua={"User-Agent": "Mozilla/5.0 (Linux; Android 5.1; A1603 Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.121 Mobile Safari/537.36"}
 user_names = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
 temp_list = ["Zcash_click_bot", "Dogecoin_click_bot", "Litecoin_click_bot", "BCH_clickbot", "BitcoinClick_bot"]
 message = "/visit"
@@ -63,40 +67,24 @@ async def visiting_link(messages):
     sleep(1)
 
 
-async def opening_link(messages):
+async def opening_link(username):
     """
     get message, find link and execute with open
     :param messages: get bot message as param
     :return: nothing
     """
-    # getting url
-    start = str(messages).find("url=")  # TODO change it
-    link = str(messages)[start + 5:start + 36]
-    if "'" in link:
-        link = link[:-1]
-    # getting time for waiting in site
-    response = requests.get(link)
-    soup = bs4.BeautifulSoup(response.text, 'html.parser')
-    all_div = soup.findAll('div')
-    n = str(all_div[0])[76:79]
-    if n[-1] == '"':
-        n = n[:-1]
-    if n[0] == '"':
-        n = n[1:]
-    try:
-        n = int(n)
-    except:
-        n = 20
-    print("opening task and waiting {} seconds...".format(n))
-    # opening browser
-    try:
-        command = "xdg-open " + link
-        os.system(command)
-        sleep(3)
-    except:
-        # we have some issue when get url!
-        print("can't open, invalid url!")
-    sleep(n)
+    posts = await client(GetHistoryRequest(peer=username,limit=1,offset_date=None,offset_id=0,max_id=0,min_id=0,add_offset=0,hash=0))
+    url = posts.messages[0].reply_markup.rows[0].buttons[0].url
+    r = c.get(url, headers=ua, timeout=15, allow_redirects=True)
+    soup = BeautifulSoup(r.content,"html.parser")
+    for dat in soup.find_all('div',class_="container-fluid"):
+        code = dat.get('data-code')
+        timer = dat.get('data-timer')
+        tokena = dat.get('data-token')
+        print("waiting for " + timer + " seconds...")
+        sleep(int(timer))
+        r = c.post("https://dogeclick.com/reward",data={"code":code,"token":tokena}, headers=ua, timeout=15, allow_redirects=True)
+        print("site, visited!!!")
 
 
 async def get_balance(username):
@@ -113,30 +101,6 @@ async def get_balance(username):
     print(str(messages_list[9])[9:-1])
 
 
-async def compare_2last_links(username):
-    """
-    get 5 last messages in chat for checking urls
-    if find same url skip the ads
-    :param username: get bot username as input
-    :return: bool value,
-    """
-    messages = await client.get_messages(username, limit=5)
-    start1 = str(messages[0]).find("url=")  # TODO change it
-    link1 = str(messages[0])[start1 + 5:start1 + 36]
-    try:
-        start2 = str(messages[4]).find("url=")  # TODO change it
-        link2 = str(messages[4])[start2 + 5:start2 + 36]
-    except:
-        link2 = ""
-
-    if link1 == link2:
-        print("can't open, skipping task...")
-        await messages[0].click(1, 1)
-        return True
-    else:
-        return False
-
-
 async def main():
     # logout and delete session file
     global waiting_time
@@ -146,16 +110,6 @@ async def main():
             await client.log_out()
             exit(0)
 
-    # get permission from user to open some sites
-    visit = input("some sites should open in browser, wanna accept our reject?(accept/reject)\n").lower()
-    if visit == "accept":
-        allow = True
-    elif visit == "reject":
-        allow = False
-    else:
-        print("undefined input, reject by default.")
-        allow = False
-
     # getting waiting time
     if 2 <= len(argv) <= 3:
         if argv[len(argv) - 1] == "-ul":
@@ -164,6 +118,10 @@ async def main():
             except:
                 print("undefined input, set 15 minutes by default.")
                 waiting_time = 900
+
+    # print user name
+    me = await client.get_me()
+    print("logged in as: " + str(me.first_name))
 
     while True:
         if len(user_names) <= 0:
@@ -198,12 +156,8 @@ async def main():
                             print("site, visited!")
                         elif "Sorry," in str(messages[0]):
                             print("Site, visited!")
-                        elif allow:
-                            if not await compare_2last_links(username):
-                                await opening_link(messages)
                         else:
-                            print("skipping task...")
-                            await messages[0].click(1, 1)
+                            await opening_link(username)
                 else:
                     print("no more ads in {}, removing bot from list.".format(username))
                     await get_balance(username)
