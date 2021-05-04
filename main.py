@@ -9,8 +9,8 @@ from telethon import TelegramClient, errors, connection
 from telethon.tl.functions.messages import GetHistoryRequest, GetBotCallbackAnswerRequest
 
 # API variables
-api_id = 12345  # add your api_id here
-api_hash = "19f30c5a..."  # add your api_hash here
+api_id = 4779974  # add your api_id here
+api_hash = "f4b4efb4068a0899d2448a146a844b21"  # add your api_hash here
 
 c = requests.Session()
 ua={"User-Agent": "Mozilla/5.0 (Linux; Android 5.1; A1603 Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.121 Mobile Safari/537.36"}
